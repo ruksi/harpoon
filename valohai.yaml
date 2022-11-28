@@ -2,4 +2,9 @@
     name: trawl-shrimp
     image: python:3.11
     command:
-      - echo no fish.
+      - echo inputs...
+      - ls -halt /valohai/inputs
+      - echo and then the school...
+      - ls -halt /valohai/inputs/school
+    inputs:
+      - name: school
