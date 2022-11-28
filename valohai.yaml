@@ -1,0 +1,5 @@
+- step:
+    name: trawl-shrimp
+    image: python:3.11
+    command:
+      - echo no fish.
