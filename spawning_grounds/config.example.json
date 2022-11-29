@@ -1,0 +1,11 @@
+{
+	"username": "the-aws-username",
+	"access_key_id": "AKI_YES_YES_VERY_REAL",
+	"secret_access_key": "THIS_IS_VERY_REAL",
+	"region": "ex-mars-1",
+	"bucket": "mars-lake",
+	"datasets": {
+		"pools/gigantum": { "count": 10000, "size_kb": 5120, "extensions": ["a", "b", "c"] },
+		"pools/microtum": { "count": 10000, "size_kb": 256, "extensions": ["a", "b", "c"] }
+	}
+}
