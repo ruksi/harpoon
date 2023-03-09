@@ -8,3 +8,77 @@
       - ls -halt /valohai/inputs/school
     inputs:
       - name: school
+
+- step:
+    name: splash-it
+    image: python:3.11
+    command:
+      - echo {parameters}
+    parameters:
+      - name: identifier
+        type: string
+      - name: message
+        type: string
+      - name: age
+        type: integer
+
+- pipeline:
+    name: splash-them-all
+    nodes:
+      - name: splash-1
+        step: splash-it
+        type: execution
+      - name: splash-2
+        step: splash-it
+        type: execution
+      - name: splash-task
+        step: splash-it
+        type: task
+    edges: []
+    parameters:
+      - name: shared-identifier
+        targets:
+          - splash-1.parameters.identifier
+          - splash-2.parameters.identifier
+          - splash-task.parameters.identifier
+      - name: greeting-message
+        targets: splash-1.parameters.message
+      - name: welcome-message
+        targets: splash-2.parameters.message
+      - name: goodbye-message
+        target: splash-task.parameters.message
+      - name: shared-age
+        targets:
+          - splash-1.parameters.age
+          - splash-2.parameters.age
+          - splash-task.parameters.age
+
+- pipeline:
+    name: splash-execution-numbers
+    nodes:
+      - name: splash-that-number
+        step: splash-it
+        type: execution
+    edges: []
+    parameters:
+      - name: shared-identifier
+        targets: splash-that-number.parameters.identifier
+      - name: shared-message
+        targets: splash-that-number.parameters.message
+      - name: shared-age
+        targets: splash-that-number.parameters.age
+
+- pipeline:
+    name: splash-task-numbers
+    nodes:
+      - name: splash-that-number
+        step: splash-it
+        type: task
+    edges: []
+    parameters:
+      - name: shared-identifier
+        targets: splash-that-number.parameters.identifier
+      - name: shared-message
+        targets: splash-that-number.parameters.message
+      - name: shared-age
+        targets: splash-that-number.parameters.age
