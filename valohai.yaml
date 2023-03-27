@@ -10,6 +10,18 @@
       - name: school
 
 - step:
+    name: environmental-impact
+    image: python:3.11
+    command:
+      - printenv
+    environment-variables:
+      - name: STEP_FURNITURE
+        default: chair
+      - name: STEP_FOOD
+        default: lasagna
+        optional: false
+
+- step:
     name: splash-it
     image: python:3.11
     command:
