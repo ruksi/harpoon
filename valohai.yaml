@@ -33,6 +33,9 @@
         type: string
       - name: age
         type: integer
+      - name: constant
+        type: string
+        default: "THIS IS CONSTANT"
 
 - pipeline:
     name: splash-them-all
