@@ -21,6 +21,8 @@
         default: lasagna
         optional: false
 
+# SPLASH STUFF
+
 - step:
     name: splash-it
     image: python:3.11
@@ -49,7 +51,7 @@
       - name: splash-task
         step: splash-it
         type: task
-    edges: []
+    edges: [ ]
     parameters:
       - name: shared-identifier
         targets:
@@ -74,7 +76,7 @@
       - name: splash-that-number
         step: splash-it
         type: execution
-    edges: []
+    edges: [ ]
     parameters:
       - name: shared-identifier
         targets: splash-that-number.parameters.identifier
@@ -89,7 +91,7 @@
       - name: splash-that-number
         step: splash-it
         type: task
-    edges: []
+    edges: [ ]
     parameters:
       - name: shared-identifier
         targets: splash-that-number.parameters.identifier
@@ -97,3 +99,20 @@
         targets: splash-that-number.parameters.message
       - name: shared-age
         targets: splash-that-number.parameters.age
+
+# NOVEL STUFF
+
+- step:
+    name: novelist
+    image: python:3.11
+    command:
+      - cp /valohai/inputs/medium/*.txt /valohai/outputs/
+      - echo {parameter-value:content} >> /valohai/outputs/*.txt
+    parameters:
+      - name: content
+        type: string
+        pass-as: "{v}"
+        default: "This is novel content."
+    inputs:
+      - name: medium
+        default: https://valohai-public-files.s3.eu-west-1.amazonaws.com/examples/book.txt
