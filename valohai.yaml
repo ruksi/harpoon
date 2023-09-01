@@ -106,13 +106,43 @@
     name: novelist
     image: python:3.11
     command:
-      - cp /valohai/inputs/medium/*.txt /valohai/outputs/
+      - ls -la /valohai/inputs/medium
+      - cp /valohai/inputs/medium/*.txt /valohai/outputs/`echo $RANDOM | md5sum | head -c 20`.txt
       - echo {parameter-value:content} >> /valohai/outputs/*.txt
+      - ls -la /valohai/outputs
     parameters:
       - name: content
         type: string
-        pass-as: "{v}"
         default: "This is novel content."
     inputs:
       - name: medium
         default: https://valohai-public-files.s3.eu-west-1.amazonaws.com/examples/book.txt
+
+- pipeline:
+    name: chain-novelist
+    nodes:
+      - name: writer-1
+        step: novelist
+        type: execution
+      - name: writer-2
+        step: novelist
+        type: execution
+        override:
+          inputs:
+            - name: medium
+              default:
+      - name: writer-3
+        step: novelist
+        type: execution
+        override:
+          inputs:
+            - name: medium
+              default:
+    edges:
+      - [ writer-1.output.*, writer-2.input.medium ]
+      - [ writer-2.output.*, writer-3.input.medium ]
+    parameters:
+      - name: two-and-three-content
+        targets:
+          - writer-2.parameters.content
+          - writer-3.parameters.content
