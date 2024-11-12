@@ -31,7 +31,7 @@ def main(model_uri: str) -> None:
             {
                 "model_uri": model_uri,
                 "model_version_tags": ["red", "blue", "green", "yellow", "pink"],
-                "model_release_note": "100% freshly squeezed unicorn juice 🍋🦄",
+                "model_release_note": "100% freshly squeezed unicorn juice 🌈",
             }
         ]
     }
