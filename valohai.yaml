@@ -51,7 +51,7 @@
       - name: splash-task
         step: splash-it
         type: task
-    edges: [ ]
+    edges: []
     parameters:
       - name: shared-identifier
         targets:
@@ -76,7 +76,7 @@
       - name: splash-that-number
         step: splash-it
         type: execution
-    edges: [ ]
+    edges: []
     parameters:
       - name: shared-identifier
         targets: splash-that-number.parameters.identifier
@@ -91,7 +91,7 @@
       - name: splash-that-number
         step: splash-it
         type: task
-    edges: [ ]
+    edges: []
     parameters:
       - name: shared-identifier
         targets: splash-that-number.parameters.identifier
@@ -130,17 +130,17 @@
         override:
           inputs:
             - name: medium
-              default:
+              default: ""
       - name: writer-3
         step: novelist
         type: execution
         override:
           inputs:
             - name: medium
-              default:
+              default: ""
     edges:
-      - [ writer-1.output.*, writer-2.input.medium ]
-      - [ writer-2.output.*, writer-3.input.medium ]
+      - [writer-1.output.*, writer-2.input.medium]
+      - [writer-2.output.*, writer-3.input.medium]
     parameters:
       - name: two-and-three-content
         targets:
