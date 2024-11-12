@@ -1,5 +1,0 @@
-boto3
-pip-tools
-ruff
-valohai-cli
-valohai-utils

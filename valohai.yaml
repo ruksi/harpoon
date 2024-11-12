@@ -3,10 +3,8 @@
 - step:
     name: create-model-version
     description: Create a new model version, remember to create the model before creating any versions!
-    image: python:3.11
-    command:
-      - pip install -r requirements.txt
-      - python -m prophet {parameters}
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: uv run prophet {parameters}
     parameters:
       - name: model-uri
         type: string
@@ -16,7 +14,7 @@
 
 - step:
     name: trawl-shrimp
-    image: python:3.11
+    image: python:3.11-slim-bookworm
     command:
       - echo inputs...
       - ls -halt /valohai/inputs
@@ -27,7 +25,7 @@
 
 - step:
     name: environmental-impact
-    image: python:3.11
+    image: python:3.11-slim-bookworm
     command:
       - printenv
     environment-variables:
@@ -41,7 +39,7 @@
 
 - step:
     name: splash-it
-    image: python:3.11
+    image: python:3.11-slim-bookworm
     command:
       - echo {parameters}
     parameters:
@@ -120,7 +118,7 @@
 
 - step:
     name: novelist
-    image: python:3.11
+    image: python:3.11-slim-bookworm
     command:
       - ls -la /valohai/inputs/medium
       - cp /valohai/inputs/medium/*.txt /valohai/outputs/`echo $RANDOM | md5sum | head -c 20`.txt

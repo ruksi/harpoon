@@ -1,3 +1,4 @@
 .idea/
+.venv/
 __pycache__/
 spawning_grounds/config.json

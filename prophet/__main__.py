@@ -8,6 +8,15 @@ import valohai
 log = logging.getLogger(__file__)
 
 
+def cli() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model-uri", type=str, required=True)
+    args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO)
+    main(model_uri=args.model_uri)
+
+
 def main(model_uri: str) -> None:
     log.info("Creating the model file")
     now = datetime.now(tz=timezone.utc).isoformat()
@@ -33,9 +42,4 @@ def main(model_uri: str) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model-uri", type=str, required=True)
-    args = parser.parse_args()
-
-    logging.basicConfig(level=logging.INFO)
-    main(model_uri=args.model_uri)
+    cli()
