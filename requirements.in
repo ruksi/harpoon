@@ -1,2 +1,4 @@
 boto3
 pip-tools
+valohai-cli
+valohai-utils
