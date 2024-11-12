@@ -1,21 +1,26 @@
+import argparse
 import json
 import logging
+from datetime import datetime, timezone
+
+import valohai
 
 log = logging.getLogger(__file__)
 
 
-def main():
+def main(model_uri: str) -> None:
     log.info("Creating the model file")
-    model_path = "/valohai/outputs/model.txt"
+    now = datetime.now(tz=timezone.utc).isoformat()
+    model_path = valohai.outputs().path("model.txt")
     with open(model_path, "w") as fp:
-        fp.write("This is my model.")
+        fp.write(f"This is my model created at {now}.")
     log.info(f"Model file created: {model_path}")
 
     log.info("Creating the model file metadata")
     metadata = {
         "valohai.model-versions": [
             {
-                "model_uri": "model://unicorns/",
+                "model_uri": model_uri,
                 "model_version_tags": ["red", "blue", "green", "yellow", "pink"],
                 "model_release_note": "100% freshly squeezed unicorn juice 🍋🦄",
             }
@@ -28,5 +33,9 @@ def main():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model-uri", type=str, required=True)
+    args = parser.parse_args()
+
     logging.basicConfig(level=logging.INFO)
-    main()
+    main(model_uri=args.model_uri)

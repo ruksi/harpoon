@@ -2,8 +2,15 @@
 
 - step:
     name: create-model-version
+    description: Create a new model version, remember to create the model before creating any versions!
     image: python:3.11
-    command: python -m prophet
+    command:
+      - pip install -r requirements.txt
+      - python -m prophet {parameters}
+    parameters:
+      - name: model-uri
+        type: string
+        default: "model://unicorns/"
 
 # SOME DEBUGGING STUFF
 
