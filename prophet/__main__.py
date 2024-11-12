@@ -12,11 +12,15 @@ def main():
     log.info(f"Model file created: {model_path}")
 
     log.info("Creating the model file metadata")
-    metadata = {"valohai.model-versions": [{
-        "model_uri": "model://unicorns/",
-        "model_version_tags": ["red", "blue", "green", "yellow", "pink"],
-        "model_release_note": "100% freshly squeezed unicorn juice 🍋🦄",
-    }]}
+    metadata = {
+        "valohai.model-versions": [
+            {
+                "model_uri": "model://unicorns/",
+                "model_version_tags": ["red", "blue", "green", "yellow", "pink"],
+                "model_release_note": "100% freshly squeezed unicorn juice 🍋🦄",
+            }
+        ]
+    }
     metadata_path = f"{model_path}.metadata.json"
     with open(metadata_path, "w") as fp:
         json.dump(metadata, fp)
