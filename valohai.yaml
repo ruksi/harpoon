@@ -1,3 +1,12 @@
+# PROPHET STUFF
+
+- step:
+    name: create-model-version
+    image: python:3.11
+    command: python -m prophet
+
+# SOME DEBUGGING STUFF
+
 - step:
     name: trawl-shrimp
     image: python:3.11
