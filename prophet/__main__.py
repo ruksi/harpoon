@@ -14,18 +14,21 @@ def cli() -> None:
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO)
-    main(model_uri=args.model_uri)
+    try:
+        main(model_uri=args.model_uri)
+    except Exception as e:
+        log.exception(e)
 
 
 def main(model_uri: str) -> None:
-    log.info("Creating the model file")
-    now = datetime.now(tz=timezone.utc).isoformat()
+    log.info("Creating an output file for the model...")
     model_path = valohai.outputs().path("model.txt")
+    now = datetime.now(tz=timezone.utc).isoformat()
     with open(model_path, "w") as fp:
         fp.write(f"This is my model created at {now}.")
-    log.info(f"Model file created: {model_path}")
+    log.info(f"Output file created: {model_path}")
 
-    log.info("Creating the model file metadata")
+    log.info("Defining that the file is a model...")
     metadata = {
         "valohai.model-versions": [
             {
@@ -38,7 +41,7 @@ def main(model_uri: str) -> None:
     metadata_path = f"{model_path}.metadata.json"
     with open(metadata_path, "w") as fp:
         json.dump(metadata, fp)
-    log.info(f"Model metadata file created: {metadata_path}")
+    log.info(f"Model description added: {metadata_path}")
 
 
 if __name__ == "__main__":
