@@ -1,4 +1,4 @@
-# PROPHET STUFF
+# PROPHET - Models and Model Versions
 
 - step:
     name: create-model-version
@@ -10,7 +10,8 @@
         type: string
         default: "model://unicorns/"
 
-# SOME DEBUGGING STUFF
+
+# SPAWNING POOL - Data and Data Versions
 
 - step:
     name: trawl-shrimp
@@ -35,7 +36,7 @@
         default: lasagna
         optional: false
 
-# SPLASH STUFF
+# General - Parameter Debugging
 
 - step:
     name: splash-it
@@ -114,7 +115,7 @@
       - name: shared-age
         targets: splash-that-number.parameters.age
 
-# NOVEL STUFF
+# General - Text Processing
 
 - step:
     name: novelist
