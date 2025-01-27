@@ -1,3 +1,44 @@
+# MECH - Metadata
+
+- step:
+    name: create-noise
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: uv run mech {parameters}
+    parameters:
+      - name: beep-count
+        type: integer
+        default: 25
+      - name: boop-count
+        type: integer
+        default: 25
+
+- step:
+    name: announce-noise
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - echo {parameters}
+    parameters:
+      - name: message
+        type: string
+
+- pipeline:
+    name: beep-boop-pipeline
+    nodes:
+      - name: create-noise-node
+        step: create-noise
+        type: execution
+      - name: announce-beeps-node
+        step: announce-noise
+        type: task
+      - name: announce-boops-node
+        step: announce-noise
+        type: task
+    edges:
+      - source: create-noise-node.metadata.beeps
+        target: announce-beeps-node.parameter.message
+      - source: create-noise-node.metadata.boops
+        target: announce-boops-node.parameter.message
+
 # PROPHET - Models and Model Versions
 
 - step:
