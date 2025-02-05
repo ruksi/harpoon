@@ -1,3 +1,17 @@
+# HORSE - Mounts
+
+- step:
+    name: mount-that-nfs-horse
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - echo "Hello, world!"
+      - sleep 5
+    mounts:
+      - source: 128.331.31.31
+        destination: /mnt/remote
+        readonly: true
+        type: nfs
+
 # MECH - Metadata
 
 - step:
