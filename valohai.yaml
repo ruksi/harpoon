@@ -1,4 +1,4 @@
-# HORSE - Mounts
+# RANDOM
 
 - step:
     name: mount-that-nfs-horse
@@ -11,6 +11,15 @@
         destination: /mnt/remote
         readonly: true
         type: nfs
+
+- step:
+    name: upload-to-custom-store
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - sleep 3
+      - echo "Hello, world!" > /valohai/outputs/greeting.txt
+      - sleep 3
+    upload-store: "0194e072-7edd-043d-22cd-2766211bfe37"
 
 # MECH - Metadata
 
