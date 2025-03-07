@@ -21,6 +21,17 @@
       - sleep 3
     upload-store: "0194e072-7edd-043d-22cd-2766211bfe37"
 
+# BATMAN - Datum Alias Testing
+
+- step:
+    name: batman-update-chant-alias
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: uv run batman {parameters}
+    parameters:
+      - name: age
+        type: integer
+        default: 26
+
 # MECH - Metadata
 
 - step:
