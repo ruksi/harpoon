@@ -21,6 +21,21 @@
       - sleep 3
     upload-store: "0194e072-7edd-043d-22cd-2766211bfe37"
 
+- endpoint:
+    name: greet
+    image: python:3.9
+    port: 8000
+    server-command: python -m wsgiref.simple_server
+    tolerations:
+      - key: "key1"
+        operator: "Equal"
+        value: "value1"
+        effect: "NoSchedule"
+      - key: "key2"
+        operator: "Exists"
+        effect: "NoExecute"
+
+
 # BATMAN - Datum Alias Testing
 
 - step:
