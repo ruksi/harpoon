@@ -129,6 +129,16 @@
 # General - Parameter Debugging
 
 - step:
+    name: do-not-wrap-it-please
+    image: python:3.11-slim-bookworm
+    command: echo {parameter:args}
+    parameters:
+      - name: args
+        type: string
+        default: this-should-not-be-quoted --example /thing/over-there --test False
+        pass-as: "{value}"
+
+- step:
     name: splash-it
     image: python:3.11-slim-bookworm
     command:
