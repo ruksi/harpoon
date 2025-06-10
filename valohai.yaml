@@ -139,6 +139,27 @@
         pass-as: "{value}"
 
 - step:
+    name: parametrized
+    image: python:3.11-slim-bookworm
+    command: echo {parameters}
+    parameters:
+      - name: subcommand
+        type: string
+        default: dinosaur
+        pass-as: "{value}"
+      - name: experiment-name
+        type: string
+        default: roomba_1
+      - name: pipeline.model.field.inside
+        type: string
+        choices: ["True", "False"]
+        default: "False"
+        optional: True
+      - name: trainer.max_iterations
+        type: integer
+        default: 30000
+
+- step:
     name: splash-it
     image: python:3.11-slim-bookworm
     command:
