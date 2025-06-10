@@ -135,7 +135,7 @@
     parameters:
       - name: args
         type: string
-        default: this-should-not-be-quoted --example /thing/over-there --test False
+        default: this-should-not-be-quoted --example /thing/over-there --test False right
         pass-as: "{value}"
 
 - step:
