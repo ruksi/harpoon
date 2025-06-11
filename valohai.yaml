@@ -26,14 +26,14 @@
     image: python:3.9
     port: 8000
     server-command: python -m wsgiref.simple_server
-    tolerations:
-      - key: "key1"
-        operator: "Equal"
-        value: "value1"
-        effect: "NoSchedule"
-      - key: "key2"
-        operator: "Exists"
-        effect: "NoExecute"
+#    tolerations:
+#      - key: "key1"
+#        operator: "Equal"
+#        value: "value1"
+#        effect: "NoSchedule"
+#      - key: "key2"
+#        operator: "Exists"
+#        effect: "NoExecute"
 
 
 # BATMAN - Datum Alias Testing
@@ -136,6 +136,16 @@
       - name: args
         type: string
         default: this-should-not-be-quoted --example /thing/over-there --test False right
+        pass-as: "{value}"
+
+- step:
+    name: do-not-wrap-it-please
+    image: python:3.11-slim-bookworm
+    command: echo {parameter:args}
+    parameters:
+      - name: args
+        type: string
+        default: 222-no-quote --example /thing/over-there --test True left
         pass-as: "{value}"
 
 - step:
