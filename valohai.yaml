@@ -1,6 +1,25 @@
 # RANDOM
 
 - step:
+    name: live-upload-for-a-while
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - |
+        for i in $(seq 1 20); do
+          echo base-data-${i} >> /valohai/outputs/base-${i}
+          chmod 444 /valohai/outputs/base-${i}
+        done;
+        for i in $(seq 1 {parameter-value:count}); do
+          echo data-${i} >> /valohai/outputs/my-file-${i}
+          chmod 444 /valohai/outputs/my-file-${i}
+          sleep 5
+        done;
+    parameters:
+      - name: count
+        type: integer
+        default: 100
+
+- step:
     name: mount-that-nfs-horse
     image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
     command:
