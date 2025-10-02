@@ -66,7 +66,7 @@
         type: integer
         default: 26
 
-# MECH - Metadata
+# MECH - Execution Metadata
 
 - step:
     name: create-noise
