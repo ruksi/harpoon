@@ -24,6 +24,7 @@ packages = ["prophet"]
 [project.scripts]
 batman = "batman.__main__:cli"
 mech = "mech.__main__:cli"
+prism = "prism.__main__:cli"
 prophet = "prophet.__main__:cli"
 
 [tool.uv]

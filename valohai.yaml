@@ -55,6 +55,13 @@
 #        effect: "NoExecute"
 
 
+# PRISM - Image Comparison
+
+- step:
+    name: prism-gen
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: uv run prism
+
 # BATMAN - Datum Alias Testing
 
 - step:
