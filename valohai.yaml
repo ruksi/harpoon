@@ -1,4 +1,248 @@
-# RANDOM
+# batman - Datum Alias Testing
+
+- step:
+    name: batman-update-chant-alias
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: uv run batman {parameters}
+    parameters:
+      - name: age
+        type: integer
+        default: 26
+
+# mech - Execution Metadata
+
+- step:
+    name: mech-create-noise
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: uv run mech {parameters}
+    parameters:
+      - name: beep-count
+        type: integer
+        default: 25
+      - name: boop-count
+        type: integer
+        default: 25
+
+- step:
+    name: mech-announce-noise
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - echo {parameters}
+    parameters:
+      - name: message
+        type: string
+
+- pipeline:
+    name: mech-beep-boop
+    nodes:
+      - name: create-noise-node
+        step: mech-create-noise
+        type: execution
+      - name: announce-beeps-node
+        step: mech-announce-noise
+        type: task
+      - name: announce-boops-node
+        step: mech-announce-noise
+        type: task
+    edges:
+      - source: create-noise-node.metadata.beeps
+        target: announce-beeps-node.parameter.message
+      - source: create-noise-node.metadata.boops
+        target: announce-boops-node.parameter.message
+
+# prism - Image Comparison
+
+- step:
+    name: prism-gen
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: uv run prism
+    inputs:
+      - name: images
+
+# prophet - Models and Model Versions
+
+- step:
+    name: prophet-new-model-version
+    description: Create a new model version, remember to create the model before creating any versions!
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: uv run prophet {parameters}
+    parameters:
+      - name: model-uri
+        type: string
+        default: "model://unicorns/"
+
+# env - Environment Variables
+
+- step:
+    name: env-environmental-impact
+    image: python:3.11-slim-bookworm
+    command:
+      - printenv
+    environment-variables:
+      - name: STEP_FURNITURE
+        default: chair
+      - name: STEP_FOOD
+        default: lasagna
+        optional: false
+
+# param - Parameters
+
+- step:
+    name: param-etrized
+    image: python:3.11-slim-bookworm
+    command: echo {parameters}
+    parameters:
+      - name: subcommand
+        type: string
+        default: dinosaur
+        pass-as: "{value}"
+      - name: experiment-name
+        type: string
+        default: roomba_1
+      - name: pipeline.model.field.inside
+        type: string
+        choices: ["True", "False"]
+        default: "False"
+        optional: True
+      - name: trainer.max_iterations
+        type: integer
+        default: 30000
+
+- step:
+    name: param-do-not-wrap-please
+    image: python:3.11-slim-bookworm
+    command: echo {parameter:args}
+    parameters:
+      - name: args
+        type: string
+        default: this-should-not-be-quoted --example /thing/over-there --test False right
+        pass-as: "{value}"
+
+- step:
+    name: param-splash
+    image: python:3.11-slim-bookworm
+    command:
+      - echo {parameters}
+    parameters:
+      - name: identifier
+        type: string
+      - name: message
+        type: string
+      - name: age
+        type: integer
+      - name: constant
+        type: string
+        default: "THIS IS CONSTANT"
+
+- pipeline:
+    name: param-splash-them-all
+    nodes:
+      - name: splash-1
+        step: param-splash
+        type: execution
+      - name: splash-2
+        step: param-splash
+        type: execution
+      - name: splash-task
+        step: param-splash
+        type: task
+    edges: []
+    parameters:
+      - name: shared-identifier
+        targets:
+          - splash-1.parameters.identifier
+          - splash-2.parameters.identifier
+          - splash-task.parameters.identifier
+      - name: greeting-message
+        targets: splash-1.parameters.message
+      - name: welcome-message
+        targets: splash-2.parameters.message
+      - name: goodbye-message
+        target: splash-task.parameters.message
+      - name: shared-age
+        targets:
+          - splash-1.parameters.age
+          - splash-2.parameters.age
+          - splash-task.parameters.age
+
+- pipeline:
+    name: param-splash-execution-numbers
+    nodes:
+      - name: splash-that-number
+        step: param-splash
+        type: execution
+    edges: []
+    parameters:
+      - name: shared-identifier
+        targets: splash-that-number.parameters.identifier
+      - name: shared-message
+        targets: splash-that-number.parameters.message
+      - name: shared-age
+        targets: splash-that-number.parameters.age
+
+- pipeline:
+    name: param-splash-task-numbers
+    nodes:
+      - name: splash-that-number
+        step: param-splash
+        type: task
+    edges: []
+    parameters:
+      - name: shared-identifier
+        targets: splash-that-number.parameters.identifier
+      - name: shared-message
+        targets: splash-that-number.parameters.message
+      - name: shared-age
+        targets: splash-that-number.parameters.age
+
+# novelist - Text Processing
+
+- step:
+    name: novelist
+    image: python:3.11-slim-bookworm
+    command:
+      - ls -la /valohai/inputs/medium
+      - cp /valohai/inputs/medium/*.txt /valohai/outputs/`echo $RANDOM | md5sum | head -c 20`.txt
+      - echo {parameter-value:content} >> /valohai/outputs/*.txt
+      - ls -la /valohai/outputs
+    parameters:
+      - name: content
+        type: string
+        default: "This is novel content."
+    inputs:
+      - name: medium
+        default: https://valohai-public-files.s3.eu-west-1.amazonaws.com/examples/book.txt
+
+- pipeline:
+    name: novelist-chain
+    nodes:
+      - name: writer-1
+        step: novelist
+        type: execution
+      - name: writer-2
+        step: novelist
+        type: execution
+        override:
+          inputs:
+            - name: medium
+              default: ""
+      - name: writer-3
+        step: novelist
+        type: execution
+        override:
+          inputs:
+            - name: medium
+              default: ""
+    edges:
+      - [writer-1.output.*, writer-2.input.medium]
+      - [writer-2.output.*, writer-3.input.medium]
+    parameters:
+      - name: two-and-three-content
+        targets:
+          - writer-2.parameters.content
+          - writer-3.parameters.content
+
+# random - TODO to clean up
 
 - step:
     name: live-upload-for-a-while
@@ -45,278 +289,3 @@
     image: python:3.9
     port: 8000
     server-command: python -m wsgiref.simple_server
-#    tolerations:
-#      - key: "key1"
-#        operator: "Equal"
-#        value: "value1"
-#        effect: "NoSchedule"
-#      - key: "key2"
-#        operator: "Exists"
-#        effect: "NoExecute"
-
-
-# PRISM - Image Comparison
-
-- step:
-    name: prism-gen
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
-    command: uv run prism
-    inputs:
-      - name: images
-
-# BATMAN - Datum Alias Testing
-
-- step:
-    name: batman-update-chant-alias
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
-    command: uv run batman {parameters}
-    parameters:
-      - name: age
-        type: integer
-        default: 26
-
-# MECH - Execution Metadata
-
-- step:
-    name: create-noise
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
-    command: uv run mech {parameters}
-    parameters:
-      - name: beep-count
-        type: integer
-        default: 25
-      - name: boop-count
-        type: integer
-        default: 25
-
-- step:
-    name: announce-noise
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
-    command:
-      - echo {parameters}
-    parameters:
-      - name: message
-        type: string
-
-- pipeline:
-    name: beep-boop-pipeline
-    nodes:
-      - name: create-noise-node
-        step: create-noise
-        type: execution
-      - name: announce-beeps-node
-        step: announce-noise
-        type: task
-      - name: announce-boops-node
-        step: announce-noise
-        type: task
-    edges:
-      - source: create-noise-node.metadata.beeps
-        target: announce-beeps-node.parameter.message
-      - source: create-noise-node.metadata.boops
-        target: announce-boops-node.parameter.message
-
-# PROPHET - Models and Model Versions
-
-- step:
-    name: create-model-version
-    description: Create a new model version, remember to create the model before creating any versions!
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
-    command: uv run prophet {parameters}
-    parameters:
-      - name: model-uri
-        type: string
-        default: "model://unicorns/"
-
-
-# SPAWNING POOL - Data and Data Versions
-
-- step:
-    name: trawl-shrimp
-    image: python:3.11-slim-bookworm
-    command:
-      - echo inputs...
-      - ls -halt /valohai/inputs
-      - echo and then the school...
-      - ls -halt /valohai/inputs/school
-    inputs:
-      - name: school
-
-- step:
-    name: environmental-impact
-    image: python:3.11-slim-bookworm
-    command:
-      - printenv
-    environment-variables:
-      - name: STEP_FURNITURE
-        default: chair
-      - name: STEP_FOOD
-        default: lasagna
-        optional: false
-
-# General - Parameter Debugging
-
-- step:
-    name: do-not-wrap-it-please
-    image: python:3.11-slim-bookworm
-    command: echo {parameter:args}
-    parameters:
-      - name: args
-        type: string
-        default: this-should-not-be-quoted --example /thing/over-there --test False right
-        pass-as: "{value}"
-
-- step:
-    name: do-not-wrap-it-please
-    image: python:3.11-slim-bookworm
-    command: echo {parameter:args}
-    parameters:
-      - name: args
-        type: string
-        default: 222-no-quote --example /thing/over-there --test True left
-        pass-as: "{value}"
-
-- step:
-    name: parametrized
-    image: python:3.11-slim-bookworm
-    command: echo {parameters}
-    parameters:
-      - name: subcommand
-        type: string
-        default: dinosaur
-        pass-as: "{value}"
-      - name: experiment-name
-        type: string
-        default: roomba_1
-      - name: pipeline.model.field.inside
-        type: string
-        choices: ["True", "False"]
-        default: "False"
-        optional: True
-      - name: trainer.max_iterations
-        type: integer
-        default: 30000
-
-- step:
-    name: splash-it
-    image: python:3.11-slim-bookworm
-    command:
-      - echo {parameters}
-    parameters:
-      - name: identifier
-        type: string
-      - name: message
-        type: string
-      - name: age
-        type: integer
-      - name: constant
-        type: string
-        default: "THIS IS CONSTANT"
-
-- pipeline:
-    name: splash-them-all
-    nodes:
-      - name: splash-1
-        step: splash-it
-        type: execution
-      - name: splash-2
-        step: splash-it
-        type: execution
-      - name: splash-task
-        step: splash-it
-        type: task
-    edges: []
-    parameters:
-      - name: shared-identifier
-        targets:
-          - splash-1.parameters.identifier
-          - splash-2.parameters.identifier
-          - splash-task.parameters.identifier
-      - name: greeting-message
-        targets: splash-1.parameters.message
-      - name: welcome-message
-        targets: splash-2.parameters.message
-      - name: goodbye-message
-        target: splash-task.parameters.message
-      - name: shared-age
-        targets:
-          - splash-1.parameters.age
-          - splash-2.parameters.age
-          - splash-task.parameters.age
-
-- pipeline:
-    name: splash-execution-numbers
-    nodes:
-      - name: splash-that-number
-        step: splash-it
-        type: execution
-    edges: []
-    parameters:
-      - name: shared-identifier
-        targets: splash-that-number.parameters.identifier
-      - name: shared-message
-        targets: splash-that-number.parameters.message
-      - name: shared-age
-        targets: splash-that-number.parameters.age
-
-- pipeline:
-    name: splash-task-numbers
-    nodes:
-      - name: splash-that-number
-        step: splash-it
-        type: task
-    edges: []
-    parameters:
-      - name: shared-identifier
-        targets: splash-that-number.parameters.identifier
-      - name: shared-message
-        targets: splash-that-number.parameters.message
-      - name: shared-age
-        targets: splash-that-number.parameters.age
-
-# General - Text Processing
-
-- step:
-    name: novelist
-    image: python:3.11-slim-bookworm
-    command:
-      - ls -la /valohai/inputs/medium
-      - cp /valohai/inputs/medium/*.txt /valohai/outputs/`echo $RANDOM | md5sum | head -c 20`.txt
-      - echo {parameter-value:content} >> /valohai/outputs/*.txt
-      - ls -la /valohai/outputs
-    parameters:
-      - name: content
-        type: string
-        default: "This is novel content."
-    inputs:
-      - name: medium
-        default: https://valohai-public-files.s3.eu-west-1.amazonaws.com/examples/book.txt
-
-- pipeline:
-    name: chain-novelist
-    nodes:
-      - name: writer-1
-        step: novelist
-        type: execution
-      - name: writer-2
-        step: novelist
-        type: execution
-        override:
-          inputs:
-            - name: medium
-              default: ""
-      - name: writer-3
-        step: novelist
-        type: execution
-        override:
-          inputs:
-            - name: medium
-              default: ""
-    edges:
-      - [writer-1.output.*, writer-2.input.medium]
-      - [writer-2.output.*, writer-3.input.medium]
-    parameters:
-      - name: two-and-three-content
-        targets:
-          - writer-2.parameters.content
-          - writer-3.parameters.content
