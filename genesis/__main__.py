@@ -1,5 +1,6 @@
-import logging
 import argparse
+import logging
+import sys
 
 log = logging.getLogger(__file__)
 
@@ -16,7 +17,7 @@ def cli() -> None:
     parser.add_argument("--file-count", type=int, default=50)
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     try:
         main(**args.__dict__)
     except Exception as e:

@@ -1,6 +1,7 @@
 import argparse
 import json
 import logging
+import sys
 from datetime import datetime, timezone
 
 import valohai
@@ -13,7 +14,7 @@ def cli() -> None:
     parser.add_argument("--model-uri", type=str, required=True)
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     try:
         main(model_uri=args.model_uri)
     except Exception as e:

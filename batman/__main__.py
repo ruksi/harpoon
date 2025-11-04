@@ -2,6 +2,7 @@ import json
 import logging
 import random
 import string
+import sys
 from datetime import datetime, timezone
 
 import valohai
@@ -29,7 +30,7 @@ def main() -> None:
 
 
 def cli() -> None:
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     try:
         main()
     except Exception as e:

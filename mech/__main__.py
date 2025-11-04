@@ -1,7 +1,7 @@
 import argparse
 import json
 import logging
-
+import sys
 
 log = logging.getLogger(__file__)
 
@@ -12,7 +12,7 @@ def cli() -> None:
     parser.add_argument("--boop-count", type=int, required=True)
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     try:
         main(beep_count=args.beep_count, boop_count=args.boop_count)
     except Exception as e:

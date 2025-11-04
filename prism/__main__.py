@@ -1,6 +1,7 @@
 import json
-import random
 import logging
+import random
+import sys
 from pathlib import Path
 
 import valohai
@@ -64,7 +65,7 @@ def main() -> None:
 
 
 def cli() -> None:
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     try:
         main()
     except Exception as e:
