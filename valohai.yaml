@@ -9,6 +9,20 @@
         type: integer
         default: 26
 
+# genesis - Datasets and Dataset Versions
+
+- step:
+    name: genesis-new-dataset-version
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: uv run genesis {parameters}
+    parameters:
+      - name: dataset-name
+        type: string
+        default: verses
+      - name: file-count
+        type: integer
+        default: 50
+
 # mech - Execution Metadata
 
 - step:
