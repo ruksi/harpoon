@@ -256,10 +256,10 @@
           - writer-2.parameters.content
           - writer-3.parameters.content
 
-# random - TODO to clean up
+# random
 
 - step:
-    name: live-upload-for-a-while
+    name: x-live-upload-for-a-while
     image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
     command:
       - |
@@ -278,7 +278,7 @@
         default: 100
 
 - step:
-    name: mount-that-nfs-horse
+    name: x-mount-that-nfs-horse
     image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
     command:
       - echo "Hello, world!"
@@ -290,7 +290,7 @@
         type: nfs
 
 - step:
-    name: upload-to-custom-store
+    name: x-upload-to-custom-store
     image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
     command:
       - sleep 3
@@ -298,8 +298,34 @@
       - sleep 3
     upload-store: "0194e072-7edd-043d-22cd-2766211bfe37"
 
+- step:
+    name: x-two-input-slots
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - |
+        sleep 1
+        echo -e "\nTODO:"
+        cd /valohai/inputs/todo
+        ls -la
+        echo
+        find . -maxdepth 1 -name "*.txt" -exec cat {} \; -exec echo \;
+        sleep 1
+        echo -e "\nDONOT:"
+        cd /valohai/inputs/donot
+        ls -la
+        echo
+        find . -maxdepth 1 -name "*.txt" -exec cat {} \; -exec echo \;
+        sleep 1
+        echo -e "\n\n"
+        sleep 1
+        cat /valohai/config/inputs.json
+        sleep 3
+    inputs:
+      - name: todo
+      - name: donot
+
 - endpoint:
-    name: greet
+    name: x-greet
     image: python:3.9
     port: 8000
-    server-command: python -m wsgiref.simple_server
+    server-command: python -m wsgiref.simple_serve
