@@ -324,6 +324,17 @@
       - name: todo
       - name: donot
 
+- step:
+    name: x-has-cache-volume
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - echo {parameters}
+    parameters:
+      - name: message
+        type: string
+        default: "Hello, world!"
+    cache-volumes: [sir-stores-a-lot]
+
 - endpoint:
     name: x-greet
     image: python:3.9
