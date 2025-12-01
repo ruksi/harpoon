@@ -336,7 +336,7 @@
     cache-volumes: [sir-stores-a-lot]
 
 - step:
-    name: x-has-empty-cache-volumes
+    name: x-has-cache-volumes-empty
     image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
     command:
       - echo {parameters}
@@ -345,6 +345,63 @@
         type: string
         default: "Hello, world!"
     cache-volumes: []
+
+- step:
+    name: x-has-cpu-min-and-mem-min-max
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - echo {parameters}
+    parameters:
+      - name: message
+        type: string
+        default: "Hello, world!"
+    resources:
+      cpu:
+        min: 1.23
+      memory:
+        min: 64
+        max: 128
+
+- step:
+    name: x-has-cpu-min-and-mem-min-max
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - echo {parameters}
+    parameters:
+      - name: message
+        type: string
+        default: "Hello, world!"
+    resources:
+      cpu:
+        min: 1.23
+      memory:
+        min: 64
+        max: 128
+
+- step:
+    name: x-has-devices-gpu
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - echo {parameters}
+    parameters:
+      - name: message
+        type: string
+        default: "Hello, world!"
+    resources:
+      devices:
+        nvidia.com/gpu: 1
+
+- step:
+    name: x-has-devices-empty
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - echo {parameters}
+    parameters:
+      - name: message
+        type: string
+        default: "Hello, world!"
+    resources:
+      devices: {}
 
 - endpoint:
     name: x-greet
