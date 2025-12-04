@@ -403,6 +403,31 @@
     resources:
       devices: {}
 
+- step:
+    name: x-very-descriptive
+    description: |
+      Run for manual [drift detection](https://ruk.si/notes/machine-learning/drift/)
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - echo {parameters}
+    parameters:
+      - name: message
+        type: string
+        default: "Hello, world!"
+        description: |
+          _Remember_ to [be concise](https://ruk.si/notes/academic/writing-message-form/).
+
+- pipeline:
+    name: x-descriptive-pipeline
+    nodes:
+      - name: greet-me
+        step: x-very-descriptive
+        type: task
+    edges: []
+    parameters:
+      - name: shared-identifier
+        targets: greet-me.parameters.message
+
 - endpoint:
     name: x-greet
     image: python:3.9
