@@ -256,6 +256,78 @@
           - writer-2.parameters.content
           - writer-3.parameters.content
 
+# wii - parameter widgets
+
+- step:
+    name: wii-combobox-str
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: echo {parameters}
+    parameters:
+      - name: model_architecture
+        type: string
+        optional: false
+        description: "Neural network architecture"
+        default: "resnet50"
+        widget:
+          type: combobox
+          settings:
+            options:
+              - resnet50
+              - resnet101
+              - vgg16
+              - inception_v3
+
+- step:
+    name: wii-combobox-int
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: echo {parameters}
+    parameters:
+      - name: batch_size
+        type: integer
+        default: 32
+        widget:
+          type: combobox
+          settings:
+            options:
+              - 16
+              - 32
+              - 64
+              - 128
+
+- step:
+    name: wii-sql
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: echo {parameters}
+    parameters:
+      - name: where_clause
+        type: string
+        description: "SQL WHERE clause for filtering"
+        default: "created_at > '2025-01-01'"
+        widget: sql
+
+- step:
+    name: wii-dockerfile
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: echo {parameters}
+    parameters:
+      - name: base_image_config
+        type: string
+        widget: dockerfile
+        default: |
+          FROM python:3.11-slim
+          RUN apt-get update && apt-get install -y git
+          RUN pip install --upgrade pip
+
+- step:
+    name: wii-datumalias
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: echo {parameters}
+    parameters:
+      - name: training_dataset
+        type: string
+        description: "Dataset alias for training data"
+        widget: datumalias
+
 # random
 
 - step:
