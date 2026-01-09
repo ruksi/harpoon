@@ -328,6 +328,63 @@
         description: "Dataset alias for training data"
         widget: datumalias
 
+# fan - fan-out processed files to separate task executions
+
+- step:
+    name: fan-preprocess
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - echo Kanto > /valohai/outputs/region-$(date +%s%N).txt
+      - sleep 0.01
+      - echo Johto > /valohai/outputs/region-$(date +%s%N).txt
+      - sleep 0.01
+      - echo Hoenn > /valohai/outputs/region-$(date +%s%N).txt
+
+- step:
+    name: fan-split
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - |
+        uv run --no-project python -c "
+        import json
+        with open('/valohai/config/inputs.json') as f:
+            data = json.load(f)
+        uris = [file['uri'] for input_data in data.values() for file in input_data.get('files', [])]
+        print(json.dumps({'split-region': uris}))
+        "
+    inputs:
+      - name: regions
+        download: on-demand
+
+- step:
+    name: fan-train
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - cat /valohai/inputs/region-data/*
+      - sleep 1
+    parameters:
+      - name: region-data-uri
+        type: string
+    inputs:
+      - name: region-data
+        default: "{parameter:region-data-uri}"
+
+- pipeline:
+    name: fan-out-pipeline
+    nodes:
+      - name: preprocess-node
+        type: execution
+        step: fan-preprocess
+      - name: split-node
+        type: execution
+        step: fan-split
+      - name: train-node
+        type: task
+        step: fan-train
+    edges:
+      - [preprocess-node.output.*, split-node.input.regions]
+      - [split-node.metadata.split-region, train-node.parameter.region-data-uri]
+
 # random
 
 - step:
