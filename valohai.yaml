@@ -385,6 +385,84 @@
       - [preprocess-node.output.*, split-node.input.regions]
       - [split-node.metadata.split-region, train-node.parameter.region-data-uri]
 
+# grid
+
+- step:
+    name: grid-preprocess
+    image: python:3.12
+    command:
+      - echo "IMAGINE TRAINING DATA HERE" > /valohai/outputs/data.txt
+      - sleep 5
+
+- step:
+    name: grid-train
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - echo "IMAGINE TRAINED MODEL HERE" > /valohai/outputs/model.txt
+      - sleep 5
+    parameters:
+      - name: epochs
+        type: integer
+    inputs:
+      - name: dataset
+
+- task:
+    name: grid-sweep
+    step: grid-train
+    type: grid_search
+    maximum-queued-executions: 2
+    on-child-error: stop-all-and-error
+    parameters:
+      - name: epochs
+        style: multiple
+        rules:
+          items: [30, 40, 50]
+
+- pipeline:
+    name: grid-pipeline
+    nodes:
+      - name: preprocess
+        type: execution
+        step: grid-preprocess
+      - name: train
+        type: task
+        # note that this refers to a task, not a step
+        task: grid-sweep
+    edges:
+      - [preprocess.output.*, train.input.dataset]
+
+- task:
+    name: grid-madness
+    step: grid-train
+    type: bayesian_tpe
+    on-child-error: continue-and-complete
+    maximum-queued-executions: 3
+    execution-count: 100
+    execution-batch-size: 10
+    optimization-target-metric: val_loss
+    optimization-target-value: 0.01
+    engine: optuna
+    stop-condition: execution.duration > 3600
+    reuse-children: true
+    parameters:
+      - name: epochs
+        style: multiple
+        rules:
+          items: [33, 44, 55]
+
+- pipeline:
+    name: grid-madline
+    nodes:
+      - name: preprocess
+        type: execution
+        step: grid-preprocess
+      - name: train
+        type: task
+        # note that this refers to a task, not a step
+        task: grid-madness
+    edges:
+      - [preprocess.output.*, train.input.dataset]
+
 # random
 
 - step:
