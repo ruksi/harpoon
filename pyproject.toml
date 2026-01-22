@@ -13,9 +13,9 @@ dependencies = [
 dev = [
     "ruff>=0.7.3",
 ]
-local = [
-    "valohai-cli @ file:///${PROJECT_ROOT}/../valohai-cli",
-]
+# local = [
+#     "valohai-cli @ file:///${PROJECT_ROOT}/../valohai-cli",
+# ]
 
 [build-system]
 requires = ["hatchling"]
@@ -30,6 +30,7 @@ genesis = "genesis.__main__:cli"
 mech = "mech.__main__:cli"
 prism = "prism.__main__:cli"
 prophet = "prophet.__main__:cli"
+ship = "ship.__main__:cli"
 
 [tool.uv]
 link-mode = "copy"  # or uv will whine about not being able to hardlink wheels

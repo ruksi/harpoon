@@ -463,6 +463,24 @@
     edges:
       - [preprocess.output.*, train.input.dataset]
 
+# ship - Deployment Testing
+
+- endpoint:
+    name: ship-greet
+    image: python:3.9
+    port: 8000
+    server-command: python -m wsgiref.simple_serve
+
+- endpoint:
+    name: ship-ahoy
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    server-command: uv run ship ahoy
+
+- endpoint:
+    name: ship-flaky
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    server-command: uv run ship flaky
+
 # random
 
 - step:
@@ -634,9 +652,3 @@
     parameters:
       - name: shared-identifier
         targets: greet-me.parameters.message
-
-- endpoint:
-    name: x-greet
-    image: python:3.9
-    port: 8000
-    server-command: python -m wsgiref.simple_serve
