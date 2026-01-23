@@ -472,6 +472,12 @@
     server-command: python -m wsgiref.simple_serve
 
 - endpoint:
+    name: ship-uvicorn
+    image: python:3.12
+    port: 8000
+    server-command: uvicorn ship:app
+
+- endpoint:
     name: ship-ahoy
     image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
     server-command: uv run ship ahoy
