@@ -10,9 +10,6 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = [
-    "ruff>=0.7.3",
-]
 # local = [
 #     "valohai-cli @ file:///${PROJECT_ROOT}/../valohai-cli",
 # ]
