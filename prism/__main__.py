@@ -36,7 +36,7 @@ def main() -> None:
             continue
 
         # keep index around
-        for idx, pred_img in enumerate([*prediction_images, base_img, truth_img]):
+        for _idx, pred_img in enumerate([*prediction_images, base_img, truth_img]):
             if pred_img.name in (base_img.name, truth_img.name):
                 new_stem = pred_img.stem
                 filename = pred_img.name
