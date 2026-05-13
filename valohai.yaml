@@ -23,6 +23,46 @@
         type: integer
         default: 50
 
+- step:
+    name: genesis-packaging
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: uv run genesis {parameters}
+    parameters:
+      - name: dataset-name
+        type: string
+        default: haikus
+      - name: file-count
+        type: integer
+        default: 3
+      - name: package
+        type: flag
+        default: true
+        description: whether to add packaging metadata boolean to dataset version
+    environment-variables:
+      - name: VH_ENABLE_DATASET_VERSION_PACKAGING
+        default: "1"
+
+- step:
+    name: genesis-report-package
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - |
+        sleep 1
+
+        echo -e "\ninputs/barrel:"
+        cd /valohai/inputs/barrel
+        ls -la
+        echo
+        find . -maxdepth 1 -name "*.txt" -exec cat {} \; -exec echo \;
+        sleep 1
+
+        echo -e "\ninputs.json:"
+        cat /valohai/config/inputs.json
+
+        sleep 1
+    inputs:
+      - name: barrel
+
 # mech - Execution Metadata
 
 - step:

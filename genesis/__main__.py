@@ -10,7 +10,7 @@ import valohai
 log = logging.getLogger(__file__)
 
 
-def main(*, dataset_name: str, file_count: int) -> None:
+def main(*, dataset_name: str, file_count: int, package: bool) -> None:
     log.info(f"Creating dataset version under '{dataset_name}' with {file_count} files")
 
     dataset_version_name = f"{int(time.time())}-{file_count}"
@@ -26,17 +26,28 @@ def main(*, dataset_name: str, file_count: int) -> None:
             file_name = f"file-{id}.txt"
             file_path = valohai.outputs().path(file_name)
             with open(file_path, "w") as f:
-                f.write(f"Generated file {i+1}/{file_count}\n")
-                f.write(f"Timestamp: {id}\n")
+                f.write(f"ID: {id}\n")
+                f.write(f"Generated file {i + 1}/{file_count}\n")
+
+            dataset_version_entry: dict[str, str | bool] = {"uri": dataset_version_ref}
+            if package:
+                dataset_version_entry["packaging"] = True
+
+            metadata_content = {
+                "valohai.dataset-versions": [dataset_version_entry],
+            }
 
             metadata_entry = {
                 "file": file_name,
-                "metadata": {"valohai.dataset-versions": [dataset_version_ref]},
+                "metadata": metadata_content,
             }
             json.dump(metadata_entry, metadata_file)
             metadata_file.write("\n")
 
     log.info(f"Created {file_count} files for {dataset_version_ref}")
+    if package:
+        log.info("... with packaging enabled!")
+
     log.info(f"Metadata saved to {metadata_path}")
 
 
@@ -44,6 +55,7 @@ def cli() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset-name", type=str, default="verses")
     parser.add_argument("--file-count", type=int, default=50)
+    parser.add_argument("--package", action="store_true", default=False)
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
