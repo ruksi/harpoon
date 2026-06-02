@@ -240,7 +240,6 @@
       - name: splash-that-number
         step: param-splash
         type: task
-        on-error: continue
     edges: []
     parameters:
       - name: shared-identifier
