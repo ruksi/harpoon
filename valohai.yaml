@@ -9,6 +9,15 @@
         type: integer
         default: 26
 
+# fissure - Environment and Preset Selection
+
+- step:
+    name: fissure-oranges-aka-tolerate-this-preset
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: uv run common {parameters}
+    environment: local-kubernetes-mimosa
+    runtime-config-preset: oranges
+
 # genesis - Datasets and Dataset Versions
 
 - step:
