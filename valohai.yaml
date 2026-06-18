@@ -14,14 +14,18 @@
 - step:
     name: fissure-oranges-aka-tolerate-this-preset
     image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
-    command: uv run common {parameters}
+    command:
+      - sleep 3
+      - uv run bommon {parameters}
     environment: local-kubernetes-mimosa
     runtime-config-preset: oranges
 
 - step:
     name: fissure-tens
     image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
-    command: uv run common {parameters}
+    command:
+      - sleep 3
+      - uv run bommon {parameters}
     environment: local-kubernetes-mimosa
     runtime-config-preset: tens
 
