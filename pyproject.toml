@@ -22,8 +22,8 @@ build-backend = "hatchling.build"
 packages = ["prophet"]
 
 [project.scripts]
+aommon = "aommon.__main__:cli"
 batman = "batman.__main__:cli"
-common = "common.__main__:cli"
 genesis = "genesis.__main__:cli"
 mech = "mech.__main__:cli"
 prism = "prism.__main__:cli"
