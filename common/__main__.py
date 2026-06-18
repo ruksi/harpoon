@@ -13,7 +13,7 @@ def main() -> None:
 
 def cli() -> None:
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-    log.info(f"Called with parameters: {sys.argv[1:]}")
+    log.info(f"Called 'common' with parameters: {sys.argv[1:]}")
     try:
         main()
     except Exception as e:
