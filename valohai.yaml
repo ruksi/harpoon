@@ -1,3 +1,10 @@
+# armada - Distributed Tasks
+
+- step:
+    name: armada-hello
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command: uv run armada
+
 # batman - Datum Alias Testing
 
 - step:

@@ -13,7 +13,11 @@ mise install
 Then, you can run the various tools locally; results will be on `.valohai` dir.
 
 ```bash
-# batman - Datum Alias Testing
+# armada - Distributed Tasks
+# NB: needs an actual distributed task on Valohai
+uv run armada
+
+# batman - Datum Aliases
 uv run batman
 
 # genesis - Datasets and Dataset Versions
@@ -29,7 +33,7 @@ uv run prism
 # prophet - Models and Model Versions
 uv run prophet --model-uri [FILL-ME]
 
-# ship - Deployment Testing
+# ship - Valohai Deployments
 uv run ship ahoy  # prints AHOY every 3 seconds
 uv run ship flaky # prints AHOY? every 3 seconds with 10% chance of crashing
 ```
