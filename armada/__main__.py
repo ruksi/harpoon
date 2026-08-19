@@ -54,6 +54,11 @@ def main() -> None:
         else:
             raise SystemExit(f"could not reach {member_id} at {ip}:{port}")
 
+    outputs_dir = os.environ.get("VH_OUTPUTS_DIR", "/valohai/outputs")
+    report = {"member": my_member_id, "peers_reached": sorted(peers)}
+    with open(os.path.join(outputs_dir, f"report-{my_member_id}.json"), "w") as f:
+        json.dump(report, f)
+
     time.sleep(15)  # stay up so slower peers can still reach us
     log.info(f"member {my_member_id} done")
 

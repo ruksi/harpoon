@@ -1,9 +1,51 @@
 # armada - Distributed Tasks
 
 - step:
+    name: armada-preprocess
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - echo "fleet orders issued at $(date -u +%FT%TZ)" > /valohai/outputs/orders.txt
+
+- step:
     name: armada-hello
     image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
     command: uv run armada
+    inputs:
+      - name: fleet-orders
+        optional: true
+
+- task:
+    name: armada-fleet
+    step: armada-hello
+    type: distributed
+    execution-count: 4
+    parameters: []
+
+- step:
+    name: armada-evaluate
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - ls -la /valohai/inputs/reports
+      - cat /valohai/inputs/reports/*
+    inputs:
+      - name: reports
+
+- pipeline:
+    name: armada-pipeline
+    nodes:
+      - name: preprocessing
+        type: execution
+        step: armada-preprocess
+      - name: training
+        type: task
+        # refers to the task blueprint above, not a step
+        task: armada-fleet
+      - name: evaluation
+        type: execution
+        step: armada-evaluate
+    edges:
+      - [preprocessing.output.*, training.input.fleet-orders]
+      - [training.output.*, evaluation.input.reports]
 
 # batman - Datum Alias Testing
 
