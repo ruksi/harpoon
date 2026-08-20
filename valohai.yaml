@@ -578,7 +578,7 @@
     name: ship-greet
     image: python:3.9
     port: 8000
-    server-command: python -m wsgiref.simple_serve
+    server-command: python -m http.server 8000
 
 - endpoint:
     name: ship-uvicorn
