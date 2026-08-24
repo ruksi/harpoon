@@ -596,6 +596,255 @@
     port: 8000
     server-command: uvicorn ship:app
 
+# looper - Looping Debugging
+
+- step:
+    name: looper
+    image: python:3.13-slim
+    command:
+      - |
+        python - <<'PYEOF'
+        import json, os, time, urllib.request
+
+        with open("/valohai/config/parameters.json") as f:
+            params = json.load(f)
+        counter, split_at, limit = int(params["counter"]), int(params["split_at"]), int(params["limit"])
+        branch = str(params.get("branch") or "")
+
+        def node_name(c, b):
+            if b:
+                return "count-%d-%s" % (c, b)
+            return "count-%d" % c
+
+        print("loop iteration %s (%d/%d)" % (node_name(counter, branch), counter, limit))
+
+        def append(name, parameters):
+            base = os.environ.get("LOOP_API_BASE")
+            if not base:
+                with open("/valohai/config/api.json") as f:
+                    status_url = json.load(f)["set_status_detail"]["url"]
+                base = status_url.split("/api/", 1)[0]
+            url = "%s/api/v0/alpha/pipelines/%s/append-node/" % (base, os.environ["VH_PIPELINE_ID"])
+            payload = {
+                "from_node_id": os.environ["VH_PIPELINE_NODE_ID"],
+                "name": name,
+                "parameters": parameters,
+            }
+            request = urllib.request.Request(
+                url,
+                data=json.dumps(payload).encode(),
+                headers={"Content-Type": "application/json"},
+            )
+            with urllib.request.urlopen(request) as response:
+                print("appended %s: HTTP %d" % (name, response.status))
+
+        if counter >= limit:
+            print("limit reached, letting the pipeline finish")
+        elif counter == split_at:
+            for next_branch in ("a", "b"):
+                append(node_name(counter + 1, next_branch), {"counter": counter + 1, "branch": next_branch})
+        else:
+            append(node_name(counter + 1, branch), {"counter": counter + 1, "branch": branch})
+
+        time.sleep(3)
+        PYEOF
+    parameters:
+      - name: counter
+        type: integer
+        default: 1
+      - name: split_at
+        type: integer
+        default: 5
+      - name: limit
+        type: integer
+        default: 10
+      - name: branch
+        type: string
+        default: ""
+
+- pipeline:
+    name: looper-pipeline
+    nodes:
+      - name: count-1
+        type: execution
+        step: looper
+    edges: []
+
+- step:
+    name: looper-prepare
+    image: python:3.13-slim
+    command:
+      - |
+        python - <<'PYEOF'
+        import json, time
+
+        with open("/valohai/outputs/dataset.json", "w") as f:
+            json.dump({"rows": 1000, "note": "imagine real preprocessing here"}, f)
+        print("prepared the dataset for the loop")
+
+        time.sleep(3)
+        PYEOF
+
+- step:
+    name: looper-worker
+    image: python:3.13-slim
+    command:
+      - |
+        python - <<'PYEOF'
+        import json, os, random, time
+
+        with open("/valohai/config/parameters.json") as f:
+            params = json.load(f)
+        counter = int(params["counter"])
+
+        dataset_dir = "/valohai/inputs/dataset"
+        if os.path.isdir(dataset_dir) and os.listdir(dataset_dir):
+            print("using prepared dataset: %s" % os.listdir(dataset_dir))
+
+        score = counter * 20 + random.randint(0, 15)
+        print("work iteration %d scored %d" % (counter, score))
+        print(json.dumps({"score": score}))
+
+        time.sleep(3)
+        PYEOF
+    parameters:
+      - name: counter
+        type: integer
+        default: 1
+    inputs:
+      - name: dataset
+        optional: true
+
+- step:
+    name: looper-decider
+    image: python:3.13-slim
+    command:
+      - |
+        python - <<'PYEOF'
+        import json, os, time, urllib.request
+
+        with open("/valohai/config/parameters.json") as f:
+            params = json.load(f)
+        counter, limit = int(params["counter"]), int(params["limit"])
+        score, target = int(params["score"]), int(params["target"])
+
+        def append(payload):
+            base = os.environ.get("LOOP_API_BASE")
+            if not base:
+                with open("/valohai/config/api.json") as f:
+                    status_url = json.load(f)["set_status_detail"]["url"]
+                base = status_url.split("/api/", 1)[0]
+            url = "%s/api/v0/alpha/pipelines/%s/append-node/" % (base, os.environ["VH_PIPELINE_ID"])
+            payload = dict(payload, from_node_id=os.environ["VH_PIPELINE_NODE_ID"])
+            request = urllib.request.Request(
+                url,
+                data=json.dumps(payload).encode(),
+                headers={"Content-Type": "application/json"},
+            )
+            with urllib.request.urlopen(request) as response:
+                print("appended %s: HTTP %d" % (payload["name"], response.status))
+
+        # `trials/iteration-N/` name prefix creates nested groups in the graphs
+        this_group = "trials/iteration-%d" % counter
+        next_group = "trials/iteration-%d" % (counter + 1)
+
+        if score >= target:
+            stop_reason = "score %d met target %d" % (score, target)
+        elif counter >= limit:
+            stop_reason = "iteration limit %d reached" % limit
+        else:
+            stop_reason = None
+
+        if stop_reason:
+            # an ungrouped name puts this node outside the `trials` group
+            print("%s, evaluating after %d trials" % (stop_reason, counter))
+            append({
+                "name": "evaluate",
+                "step": "looper-evaluate",
+                "parameters": {"trials": counter},
+                "edges": [
+                    {
+                        "source": "%s/work.metadata.score" % this_group,
+                        "target": "evaluate.parameter.score",
+                    },
+                ],
+            })
+        else:
+            print("score %d below target %d, continuing to iteration %d" % (score, target, counter + 1))
+            append({
+                "name": "%s/work" % next_group,
+                "clone_from": "%s/work" % this_group,
+                "parameters": {"counter": counter + 1},
+            })
+            append({
+                "name": "%s/check" % next_group,
+                "parameters": {"counter": counter + 1},
+                "edges": [
+                    {
+                        "source": "%s/work.metadata.score" % next_group,
+                        "target": "%s/check.parameter.score" % next_group,
+                    },
+                ],
+            })
+
+        time.sleep(3)
+        PYEOF
+    parameters:
+      - name: counter
+        type: integer
+        default: 1
+      - name: limit
+        type: integer
+        default: 10
+      - name: target
+        type: integer
+        default: 100
+      - name: score
+        type: integer
+        default: 0
+
+- step:
+    name: looper-evaluate
+    image: python:3.13-slim
+    command:
+      - |
+        python - <<'PYEOF'
+        import json, time
+
+        with open("/valohai/config/parameters.json") as f:
+            params = json.load(f)
+        score, trials = int(params["score"]), int(params["trials"])
+        print("best score %d after %d trials" % (score, trials))
+
+        time.sleep(3)
+        PYEOF
+    parameters:
+      - name: score
+        type: integer
+        default: 0
+      - name: trials
+        type: integer
+        default: 0
+
+- pipeline:
+    name: looper-decider-pipeline
+    nodes:
+      - name: prepare
+        type: execution
+        step: looper-prepare
+      - name: trials/iteration-1/work
+        type: execution
+        step: looper-worker
+      - name: trials/iteration-1/check
+        type: execution
+        step: looper-decider
+    edges:
+      - [prepare.output.*, trials/iteration-1/work.input.dataset]
+      - [
+          trials/iteration-1/work.metadata.score,
+          trials/iteration-1/check.parameter.score,
+        ]
+
 # random
 
 - step:
