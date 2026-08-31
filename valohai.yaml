@@ -591,6 +591,15 @@
     server-command: uv run ship greet --port 8000
 
 - endpoint:
+    name: ship-greet-shared
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    port: 8000
+    server-command: uv run ship greet --port 8000
+    shared-volumes:
+      - pvc-name: sir-stores-alot
+        mount-path: /shared/one
+
+- endpoint:
     name: ship-uvicorn
     image: python:3.12
     port: 8000
