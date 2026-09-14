@@ -591,13 +591,31 @@
     server-command: uv run ship greet --port 8000
 
 - endpoint:
+    name: ship-greet-workspace
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    port: 8000
+    server-command: uv run ship greet --port 8000
+    workspace-volume:
+      size: 10
+      mount-path: /my/workspace-volume
+
+- endpoint:
+    name: ship-greet-workspace-touch
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    port: 8000
+    server-command: touch /my/workspace-volume/test.txt && ls /my/workspace-volume && sleep infinity
+    workspace-volume:
+      size: 10
+      mount-path: /my/workspace-volume
+
+- endpoint:
     name: ship-greet-shared
     image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
     port: 8000
     server-command: uv run ship greet --port 8000
     shared-volumes:
       - pvc-name: sir-stores-alot
-        mount-path: /shared/one
+        mount-path: /my/shared-volume
 
 - endpoint:
     name: ship-uvicorn
