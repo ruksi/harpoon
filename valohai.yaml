@@ -585,6 +585,11 @@
     server-command: uv run ship flaky
 
 - endpoint:
+    name: ship-bad-image
+    image: python:does-not-exist
+    server-command: uv run ship flaky
+
+- endpoint:
     name: ship-greet
     image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
     port: 8000
