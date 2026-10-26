@@ -2,13 +2,13 @@
 
 - step:
     name: armada-preprocess
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - echo "fleet orders issued at $(date -u +%FT%TZ)" > /valohai/outputs/orders.txt
 
 - step:
     name: armada-hello
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command: uv run armada
     inputs:
       - name: fleet-orders
@@ -23,7 +23,7 @@
 
 - step:
     name: armada-evaluate
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - ls -la /valohai/inputs/reports
       - cat /valohai/inputs/reports/*
@@ -51,7 +51,7 @@
 
 - step:
     name: batman-update-chant-alias
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command: uv run batman {parameters}
     parameters:
       - name: age
@@ -62,7 +62,7 @@
 
 - step:
     name: fissure-oranges-aka-tolerate-this-preset
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - sleep 3
       - uv run common {parameters}
@@ -71,7 +71,7 @@
 
 - step:
     name: fissure-tens
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - sleep 3
       - uv run common {parameters}
@@ -82,7 +82,7 @@
 
 - step:
     name: genesis-new-dataset-version
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command: uv run genesis {parameters}
     parameters:
       - name: dataset-name
@@ -94,7 +94,7 @@
 
 - step:
     name: genesis-packaging
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command: uv run genesis {parameters}
     parameters:
       - name: dataset-name
@@ -113,7 +113,7 @@
 
 - step:
     name: genesis-report-package
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - |
         sleep 1
@@ -136,7 +136,7 @@
 
 - step:
     name: mech-create-noise
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command: uv run mech {parameters}
     parameters:
       - name: beep-count
@@ -148,7 +148,7 @@
 
 - step:
     name: mech-announce-noise
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - echo {parameters}
     parameters:
@@ -177,7 +177,7 @@
 
 - step:
     name: prism-gen
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command: uv run prism
     inputs:
       - name: images
@@ -187,7 +187,7 @@
 - step:
     name: prophet-new-model-version
     description: Create a new model version, remember to create the model before creating any versions!
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command: uv run prophet {parameters}
     parameters:
       - name: model-uri
@@ -198,7 +198,7 @@
 
 - step:
     name: env-environmental-impact
-    image: python:3.11-slim-bookworm
+    image: python:3.11-slim-trixie
     command:
       - printenv
     environment-variables:
@@ -212,7 +212,7 @@
 
 - step:
     name: param-etrized
-    image: python:3.11-slim-bookworm
+    image: python:3.11-slim-trixie
     command: echo {parameters}
     parameters:
       - name: subcommand
@@ -233,7 +233,7 @@
 
 - step:
     name: param-do-not-wrap-please
-    image: python:3.11-slim-bookworm
+    image: python:3.11-slim-trixie
     command: echo {parameter:args}
     parameters:
       - name: args
@@ -243,7 +243,7 @@
 
 - step:
     name: param-splash
-    image: python:3.11-slim-bookworm
+    image: python:3.11-slim-trixie
     command:
       - echo {parameters}
     parameters:
@@ -322,7 +322,7 @@
 
 - step:
     name: novelist
-    image: python:3.11-slim-bookworm
+    image: python:3.11-slim-trixie
     command:
       - ls -la /valohai/inputs/medium
       - cp /valohai/inputs/medium/*.txt /valohai/outputs/`echo $RANDOM | md5sum | head -c 20`.txt
@@ -369,7 +369,7 @@
 
 - step:
     name: wii-combobox-str
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command: echo {parameters}
     parameters:
       - name: model_architecture
@@ -388,7 +388,7 @@
 
 - step:
     name: wii-combobox-int
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command: echo {parameters}
     parameters:
       - name: batch_size
@@ -405,7 +405,7 @@
 
 - step:
     name: wii-sql
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command: echo {parameters}
     parameters:
       - name: where_clause
@@ -416,7 +416,7 @@
 
 - step:
     name: wii-dockerfile
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command: echo {parameters}
     parameters:
       - name: base_image_config
@@ -429,7 +429,7 @@
 
 - step:
     name: wii-datumalias
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command: echo {parameters}
     parameters:
       - name: training_dataset
@@ -441,7 +441,7 @@
 
 - step:
     name: fan-preprocess
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - echo Kanto > /valohai/outputs/region-$(date +%s%N).txt
       - sleep 0.01
@@ -451,7 +451,7 @@
 
 - step:
     name: fan-split
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - |
         uv run --no-project python -c "
@@ -467,7 +467,7 @@
 
 - step:
     name: fan-train
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - cat /valohai/inputs/region-data/*
       - sleep 1
@@ -505,7 +505,7 @@
 
 - step:
     name: grid-train
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - echo "IMAGINE TRAINED MODEL HERE" > /valohai/outputs/model.txt
       - sleep 5
@@ -576,12 +576,12 @@
 
 - endpoint:
     name: ship-ahoy
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     server-command: uv run ship ahoy
 
 - endpoint:
     name: ship-flaky
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     server-command: uv run ship flaky
 
 - endpoint:
@@ -591,13 +591,13 @@
 
 - endpoint:
     name: ship-greet
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     port: 8000
     server-command: uv run ship greet --port 8000
 
 - endpoint:
     name: ship-greet-workspace
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     port: 8000
     server-command: uv run ship greet --port 8000
     workspace-volume:
@@ -606,7 +606,7 @@
 
 - endpoint:
     name: ship-greet-workspace-touch
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     port: 8000
     server-command: touch /my/workspace-volume/test.txt && ls /my/workspace-volume && sleep infinity
     workspace-volume:
@@ -615,7 +615,7 @@
 
 - endpoint:
     name: ship-greet-shared
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     port: 8000
     server-command: uv run ship greet --port 8000
     shared-volumes:
@@ -967,7 +967,7 @@
 
 - step:
     name: x-live-upload-for-a-while
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - |
         for i in $(seq 1 20); do
@@ -986,7 +986,7 @@
 
 - step:
     name: x-mount-that-nfs-horse
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - echo "Hello, world!"
       - sleep 5
@@ -998,7 +998,7 @@
 
 - step:
     name: x-upload-to-custom-store
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - sleep 3
       - echo "Hello, world!" > /valohai/outputs/greeting.txt
@@ -1007,7 +1007,7 @@
 
 - step:
     name: x-two-input-slots
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - |
         sleep 1
@@ -1033,7 +1033,7 @@
 
 - step:
     name: x-has-cache-volume
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - echo {parameters}
     parameters:
@@ -1044,7 +1044,7 @@
 
 - step:
     name: x-has-cache-volumes-empty
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - echo {parameters}
     parameters:
@@ -1055,7 +1055,7 @@
 
 - step:
     name: x-has-cpu-min-and-mem-min-max
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - echo {parameters}
     parameters:
@@ -1071,7 +1071,7 @@
 
 - step:
     name: x-has-cpu-min-and-mem-min-max
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - echo {parameters}
     parameters:
@@ -1087,7 +1087,7 @@
 
 - step:
     name: x-has-devices-gpu
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - echo {parameters}
     parameters:
@@ -1100,7 +1100,7 @@
 
 - step:
     name: x-has-devices-empty
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - echo {parameters}
     parameters:
@@ -1114,7 +1114,7 @@
     name: x-very-descriptive
     description: |
       Run for manual [drift detection](https://ruk.si/notes/machine-learning/drift/)
-    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
     command:
       - echo {parameters}
     parameters:
