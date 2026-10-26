@@ -498,7 +498,7 @@
 
 - step:
     name: grid-preprocess
-    image: python:3.12
+    image: python:3.12-slim
     command:
       - echo "IMAGINE TRAINING DATA HERE" > /valohai/outputs/data.txt
       - sleep 5
@@ -624,7 +624,7 @@
 
 - endpoint:
     name: ship-uvicorn
-    image: python:3.12
+    image: python:3.12-slim
     port: 8000
     server-command: uvicorn ship:app
 
