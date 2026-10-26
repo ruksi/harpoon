@@ -877,6 +877,92 @@
           trials/iteration-1/check.parameter.score,
         ]
 
+# confluence - Separate pipelines accumulating into one dataset
+
+- step:
+    name: confluence-produce
+    image: python:3.13-slim
+    command:
+      - |
+        python - <<'PYEOF'
+        import json, time
+
+        with open("/valohai/config/parameters.json") as f:
+            params = json.load(f)
+        dataset, label = params["dataset"], params["label"]
+        names = [name.strip() for name in params["files"].split(",") if name.strip()]
+
+        # version names must be unique, so stamp them
+        version_uri = "dataset://%s/%s-%d" % (dataset, label, int(time.time()))
+        # copy whatever the other pipelines have put in the latest version,
+        # but drop the stale copies of the files this pipeline is about to produce
+        dataset_version = {
+            "uri": version_uri,
+            "from": "dataset://%s/latest" % dataset,
+            "exclude": ["%s.txt" % name for name in names],
+        }
+        print("producing %s into %s" % (", ".join(names), version_uri))
+
+        with open("/valohai/outputs/valohai.metadata.jsonl", "w") as metadata_file:
+            for name in names:
+                file_name = "%s.txt" % name
+                with open("/valohai/outputs/%s" % file_name, "w") as f:
+                    f.write("%s produced by pipeline %s at %s\n" % (name, label, time.strftime("%FT%TZ", time.gmtime())))
+                entry = {"file": file_name, "metadata": {"valohai.dataset-versions": [dataset_version]}}
+                metadata_file.write(json.dumps(entry) + "\n")
+
+        time.sleep(3)
+        PYEOF
+    parameters:
+      - name: dataset
+        type: string
+        default: confluence
+      - name: label
+        type: string
+        default: a
+      - name: files
+        type: string
+        default: "A,B,C"
+        description: comma-separated file names to produce
+
+- step:
+    name: confluence-inspect
+    image: python:3.13-slim
+    command:
+      - ls -la /valohai/inputs/merged
+      - cat /valohai/inputs/merged/*.txt
+    inputs:
+      - name: merged
+        default: dataset://confluence/latest
+
+- pipeline:
+    name: confluence-pipeline-a
+    nodes:
+      - name: produce
+        type: execution
+        step: confluence-produce
+        override:
+          parameters:
+            - name: label
+              default: a
+            - name: files
+              default: "A,B,C"
+    edges: []
+
+- pipeline:
+    name: confluence-pipeline-x
+    nodes:
+      - name: produce
+        type: execution
+        step: confluence-produce
+        override:
+          parameters:
+            - name: label
+              default: x
+            - name: files
+              default: "X,Y,Z"
+    edges: []
+
 # random
 
 - step:
