@@ -1134,3 +1134,56 @@
     parameters:
       - name: shared-identifier
         targets: greet-me.parameters.message
+
+# typo
+
+- step:
+    name: typo-greet
+    image: ghcr.io/astral-sh/uv:python3.11-trixie-slim
+    command:
+      - echo {parameters}
+    parameters:
+      - name: message
+        type: string
+        default: "Hello, world!"
+
+- pipeline:
+    name: typo-local-pipeline
+    nodes:
+      - name: greet
+        type: execution
+        step: typo-gret
+    edges: []
+
+- pipeline:
+    name: typo-pinned-pipeline
+    nodes:
+      - name: greet
+        type: execution
+        step: typo-gret
+        commit: main
+    edges: []
+
+- pipeline:
+    name: typo-twin-control-pipeline
+    nodes:
+      - name: greet
+        type: execution
+        step: typo-greet
+      - name: twin-greet
+        type: execution
+        step: typo-greet
+        commit: twin:main
+    edges: []
+
+- pipeline:
+    name: typo-twin-pipeline
+    nodes:
+      - name: greet
+        type: execution
+        step: typo-greet
+      - name: twin-greet
+        type: execution
+        step: typo-gret
+        commit: twin:main
+    edges: []
